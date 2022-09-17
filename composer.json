@@ -1,0 +1,30 @@
+{
+  "name": "brekitomasson/laravel-tagged-cache",
+  "description": "A wrapper around the cache implementation to reduce complexity regarding caching in your Models",
+  "type": "library",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "BrekiTomasson\\LaravelTaggedCache\\": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "Breki Tomasson",
+      "email": "breki.tomasson@gmail.com"
+    }
+  ],
+  "minimum-stability": "beta",
+  "require": {
+    "php": "^8.1",
+    "illuminate/support": "^9.0",
+    "illuminate/cache": "^9.0",
+    "illuminate/database": "^9.0"
+  },
+  "require-dev": {
+    "brekitomasson/php-cs-fixer-breki-config": "^1.1"
+  },
+  "scripts": {
+    "fix": "vendor/bin/php-cs-fixer fix --config ./.php-cs-fixer.php"
+  }
+}
