@@ -167,6 +167,7 @@ below will be implemented, others won't. Pull Requests and suggestions are **alw
   class is all about, which `TimeSpan` doesn't necessarily feel like.
 - Does `TimeSpan` really have to be an `Enum`? Feels like most of what I'm doing there can be done with just a normal
   class, and maybe even in a better way than currently.
+- Add ability to flush model caches on **any** change, not just to attributes listed in overridden method.
 
 # Copyright / License
 
