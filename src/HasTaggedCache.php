@@ -12,7 +12,7 @@ namespace BrekiTomasson\LaravelTaggedCache;
 trait HasTaggedCache
 {
     /** Set up the various hooks required for cache flushing etc. */
-    public function bootHasTaggedCache(): void
+    public static function bootHasTaggedCache(): void
     {
         static::updated(static function (self $model): void {
             if ($model->isDirty($model->flushTaggedCacheOnAttributeUpdate())) {
