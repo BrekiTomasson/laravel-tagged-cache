@@ -4,18 +4,27 @@ declare(strict_types = 1);
 
 namespace BrekiTomasson\LaravelTaggedCache;
 
-use Illuminate\Cache\TaggedCache;
-use Illuminate\Support\Facades\Cache;
-
 /**
  * Simplify handling of Cache Tags for Laravel Models.
- *
- * @property string $cacheTagIdentifier Optional tag to use instead of the model name.
  *
  * @mixin \Illuminate\Database\Eloquent\Model
  */
 trait HasTaggedCache
 {
+    /** Set up the various hooks required for cache flushing etc. */
+    public function bootHasTaggedCache(): void
+    {
+        static::updated(static function (self $model): void {
+            if ($model->isDirty($model->flushTaggedCacheOnAttributeUpdate())) {
+                $model->taggedCache()->flush();
+            }
+        });
+
+        static::deleted(static function (self $model): void {
+            $model->taggedCache()->flush();
+        });
+    }
+
     public function getCachedAttribute(string $attribute): mixed
     {
         return $this->taggedCache()->remember(
@@ -25,17 +34,34 @@ trait HasTaggedCache
         );
     }
 
-    public function taggedCache(...$extraTags): TaggedCache
+    public function taggedCache(...$extraTags): \Illuminate\Cache\TaggedCache
     {
-        return Cache::tags($this->btltcCacheTags(...$extraTags));
+        return \Illuminate\Support\Facades\Cache::tags($this->btltcCacheTags(...$extraTags));
+    }
+
+    /** The name to base the cache tags on. Defaults to the model's database table. */
+    public function getCacheTagIdentifier(): string
+    {
+        return (new static())->getTable();
+    }
+
+    /** Model Attributes that cause the cache to be flushed. */
+    public function flushTaggedCacheOnAttributeUpdate(): array
+    {
+        return [];
+    }
+
+    protected function btltcCacheTag(): \Illuminate\Support\Stringable
+    {
+        return str($this->getCacheTagIdentifier())->lower()->snake();
     }
 
     /** @return array<int, int|string> */
     protected function btltcCacheTags(...$extraTags): array
     {
         return [
-            $this->btltcGetCacheTagsTableName(),
-            str($this->btltcGetCacheTagsTableName())
+            $this->btltcCacheTag()->toString(),
+            $this->btltcCacheTag()
                 ->singular()
                 ->append(':')
                 ->append($this->btltcGetCacheTagsUniqueIdentifier())
@@ -44,15 +70,8 @@ trait HasTaggedCache
         ];
     }
 
-    protected function btltcGetCacheTagsTableName(): string
-    {
-        return (new static())->getTable();
-    }
-
     private function btltcGetCacheTagsUniqueIdentifier(): string
     {
-        $identifier = ($this->getAttribute($this->cacheTagIdentifier) ?? $this->getKey());
-
-        return str($identifier)->snake()->toString();
+        return str((string) $this->getKey())->snake()->toString();
     }
 }
