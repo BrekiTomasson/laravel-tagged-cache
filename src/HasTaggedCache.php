@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace BrekiTomasson\LaravelTaggedCache;
 
@@ -25,6 +25,12 @@ trait HasTaggedCache
         });
     }
 
+    /** Model Attributes that cause the cache to be flushed. */
+    public function flushTaggedCacheOnAttributeUpdate(): array
+    {
+        return [];
+    }
+
     public function getCachedAttribute(string $attribute): mixed
     {
         return $this->taggedCache()->remember(
@@ -34,21 +40,15 @@ trait HasTaggedCache
         );
     }
 
-    public function taggedCache(...$extraTags): \Illuminate\Cache\TaggedCache
-    {
-        return \Illuminate\Support\Facades\Cache::tags($this->btltcCacheTags(...$extraTags));
-    }
-
     /** The name to base the cache tags on. Defaults to the model's database table. */
     public function getCacheTagIdentifier(): string
     {
         return (new static())->getTable();
     }
 
-    /** Model Attributes that cause the cache to be flushed. */
-    public function flushTaggedCacheOnAttributeUpdate(): array
+    public function taggedCache(...$extraTags): \Illuminate\Cache\TaggedCache
     {
-        return [];
+        return \Illuminate\Support\Facades\Cache::tags($this->btltcCacheTags(...$extraTags));
     }
 
     protected function btltcCacheTag(): \Illuminate\Support\Stringable
