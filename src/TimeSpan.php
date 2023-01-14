@@ -99,7 +99,7 @@ enum TimeSpan: int
             }
         }
 
-        throw new RuntimeException("Undefined TimeSpan: ${name}");
+        throw new RuntimeException('Undefined TimeSpan: ' . $name);
     }
 
     public function __invoke(): int
