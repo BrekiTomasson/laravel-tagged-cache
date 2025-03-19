@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is looselyy based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v2.0.5] - Update, 2025-03-19
+
+- Changed: Added support for Laravel 12.
+
+## [v2.0.4] - Update, 2025-01-04
+
+- Changed: Added support for Laravel 11.
+
 ## [v2.0.3] - Update, 2023-02-22
 
 - Changed: Added support for Laravel 10.
