@@ -2,8 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
-The format is looselyy based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres
-to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [v2.0.6] - Update, 2025-11-25
+
+- Added: `flushTaggedCacheOnAttributeUpdate()` now accepts `['*']`, which will flush tagged cache on any change.
+- Removed `TimeSpan` class as it was outside of project scope.
 
 ## [v2.0.5] - Update, 2025-03-19
 

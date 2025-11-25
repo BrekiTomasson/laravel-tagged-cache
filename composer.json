@@ -26,5 +26,8 @@
   },
   "scripts": {
     "fix": "vendor/bin/php-cs-fixer fix --config ./.php-cs-fixer.php"
+  },
+  "suggest": {
+    "brekitomasson/seconds": "For cleaner cache duration descriptions."
   }
 }

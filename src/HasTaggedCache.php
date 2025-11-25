@@ -18,6 +18,10 @@ trait HasTaggedCache
             if ($model->isDirty($model->flushTaggedCacheOnAttributeUpdate())) {
                 $model->taggedCache()->flush();
             }
+
+            if ($model->isDirty() && in_array('*', $model->flushTaggedCacheOnAttributeUpdate(), true)) {
+                $model->taggedCache()->flush();
+            }
         });
 
         static::deleted(static function (self $model): void {
@@ -35,8 +39,8 @@ trait HasTaggedCache
     {
         return $this->taggedCache()->remember(
             $attribute,
-            TimeSpan::days(1),
-            fn () => $this->getAttribute($attribute),
+            86_400,
+            fn() => $this->getAttribute($attribute)
         );
     }
 

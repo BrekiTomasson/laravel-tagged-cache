@@ -86,6 +86,15 @@ public function updated(ModelName $model): void
 }
 ```
 
+If you want the tagged cache to be flushed when any attribute is changed in your model, you can use the `'*'` wildcard:
+
+```php
+public function flushTaggedCacheOnAttributeUpdate(): array
+{
+    return ['*'];
+}
+```
+
 > Note: Caches will **always** be flushed for rows that are deleted. This behavior cannot be disabled.
 
 ## 2 - Getting and Caching a Single Attribute
@@ -119,55 +128,20 @@ If this method were in your model, then `Model::find(42)->taggedCache()` would u
 
 ## 4 - Cache Duration Helper
 
-Instead of relying on things like `now()->addDays(3)` when setting up how long a cache key should be remembered, this
-package contains an invokable and callable Enum class called `TimeSpan` that contains a whole host of pre-defined
-values, defined in seconds. Using this will save you the processing time required for `Carbon` to get the current
-system time, add your given duration to it, and for Laravel to then calculate the difference between the current time
-and the returned time. It may not seem like an expensive operation, but it all adds up quite quickly if you're using it
-often enough. To use the `TimeSpan` Enum in your cache statements, just do something like this:
-
-```php
-public function getCountryNameAttribute(): string
-{
-    return $this->taggedCache()->remember(
-        'country-name',
-        TimeSpan::ONE_WEEK(),
-        fn() => $this->country->name
-    );
-}
-```
-
-If there is not an appropriate case defined in the Enum, such as if you want exactly 32 minutes, or if you think it
-looks cleaner to write it that way, there are static methods for `minutes`, `days`, and `weeks` which you can invoke
-using syntax like `TimeSpan::minutes(32)` or `TimeSpan::weeks(9)`. These always return the appropriate number of seconds
-as an integer.
+Instead of relying on things like `now()->addDays(3)` when setting up how long a cache key should be remembered, 
+you could use [`BrekiTomasson/Seconds`](https://github.com/BrekiTomasson/Seconds) to write cleaner code and have
+a better overview of how things works. This package is not included in `Laravel-Tagged-Cache`, but is recommended.
 
 ```php
 public function getOpenTicketCount(): int
 {
     return $this->taggedCache()->remember(
         'open-tickets',
-        TimeSpan::minutes(3),
+        Seconds::minutes(3),
         fn() => $this->tickets->whereNotIn('status', [TicketStatus::CLOSED, TicketStatus::PENDING])->count();
     );
 }
 ```
-
-> Note: The `TimeSpan` class does not have values or methods for months, as these are of variable length and cannot
-> adequately be defined in seconds. The longest duration available as an Enum case is `TimeSpan::FOUR_WEEKS()`. To get
-> a value approximating three months, you can use something like `TimeSpan::weeks(12)` or `TimeSpan::days(90)`.
-
-# Future Development Ideas
-
-These are things I've been thinking about when it comes to future development for this package. Some things listed
-below will be implemented, others won't. Pull Requests and suggestions are **always** welcome.
-
-- Is `TimeSpan` a good enough name for that class? I want to avoid potential naming conflicts, so I'm avoiding calling
-  the class simply `Seconds` or something like that, but I also want the name to be descriptive enough for what the
-  class is all about, which `TimeSpan` doesn't necessarily feel like.
-- Does `TimeSpan` really have to be an `Enum`? Feels like most of what I'm doing there can be done with just a normal
-  class, and maybe even in a better way than currently.
-- Add ability to flush model caches on **any** change, not just to attributes listed in overridden method.
 
 # Copyright / License
 
